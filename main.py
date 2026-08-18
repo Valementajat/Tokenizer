@@ -1,13 +1,13 @@
 import os
 
 from fileHelpers import retrieve_files, save_tokenizer
-from tokenizeHelper import apply_merge, findMergeToken, getSingleTokens
+from tokenizeHelper import apply_merge, findMergeToken, getSingleTokens, progress_bar
 from dotenv import load_dotenv
 
 load_dotenv()
 
 
-tokenBudget = 100000
+tokenBudget = 2000
 
 training_path = os.getenv("TRAINING_PATH")
 if not training_path:
@@ -28,7 +28,11 @@ while len(vocab) < tokenBudget:
     merges.append(pair)
     vocab.append(pair[0] + pair[1])
 
+
+    progress_bar(len(merges), tokenBudget)
+print()
 print(f"Final number of tokens: {len(vocab)}")
 print(f"Final number of merges: {len(merges)}")
-save_tokenizer(vocab, merges, os.getenv('VAULT_PATH')
+save_tokenizer(vocab, merges, os.getenv('VAULT_PATH')       
 )
+

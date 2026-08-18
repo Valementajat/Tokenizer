@@ -4,10 +4,23 @@ from collections import Counter
 def getSingleTokens(splits):
     return {t for tokens in splits.values() for t in tokens}
 
+
+# Claude generated progres bar
+def progress_bar(current, total, width=40):
+    frac = current / total
+    filled = int(width * frac)
+    bar = "█" * filled + "-" * (width - filled)
+    print(f"\r|{bar}| {current}/{total} ({frac:.0%})", end="", flush=True)
+    if current == total:
+        print()  # newline when done
+
+
+
+
 def findMergeToken(splits, word_freqs):
 
     tokenFreqs = Counter()
-
+    
     for word, freq in word_freqs.items():
         token = splits[word]
       
@@ -19,14 +32,11 @@ def findMergeToken(splits, word_freqs):
             tokenFreqs[pair] += freq
             
         
-        try:
-            toMergeToken = tokenFreqs.most_common(1)[0][0]
-        except IndexError:
-            """ print("No more tokens to merge.", token) """
-            return None
+    if not tokenFreqs:
+        return None
 
     
-    return toMergeToken
+    return tokenFreqs.most_common(1)[0][0]
 
 
 def apply_merge(pair, splits):
